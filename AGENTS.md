@@ -65,11 +65,13 @@ The key words MUST, MUST NOT, SHOULD, SHOULD NOT and MAY are used as in RFC 2119
 
 ## This repository
 
-Pictures that ArtCraft Launcher downloads at run time: the screenshots on each Craft App's details page. There is no code and no build.
+Canonical metadata and assets for ArtCraft Launcher. ArtCraft Services consumes this repository at build time and signs the published catalog.
 
+- Catalog: `catalog.toml` is the unsigned base app metadata; services add release data and sign it. Icons are `app-icons/<app-id>-<sha256>.png` with matching catalog digest, attribution and license files. Keep previously published hashed icons.
 - Layout: one directory per app (`photocraft/`, `designcraft/`, ...) with JPEGs named by key (`<app>/<key>.jpg`); `ATTRIBUTION.md` records every picture's licence and source.
 - Pictures are 1200 x 750 px JPEGs (8:5, no metadata). The launcher reads them from `https://raw.githubusercontent.com/storytold/craft-launcher-assets/<tag>/<app>/<key>.jpg` at the tag named by `SCREENSHOTS_REV` in craft-launcher's `crates/core/src/details.rs`.
 - Releases are tags (`v2`, `v3`, ...). The launcher keeps what it downloads under the tag it pins, so a change gets a new tag and `SCREENSHOTS_REV` in craft-launcher points to it.
-- Attribution file: `ATTRIBUTION.md`. Checks: none; the launcher refuses a file over 2 MB or one that is not a JPEG.
+- Attribution files: `ATTRIBUTION.md` and `app-icons/ATTRIBUTION.md`. Check catalog icon digests against the files; the launcher refuses a screenshot over 2 MB or one that is not a JPEG.
+- Pushes to main or version tags notify ArtCraft Services to rebuild; see README.
 - `unsafe`: no Rust code here.
 - More: [README.md](README.md).

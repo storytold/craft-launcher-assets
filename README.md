@@ -1,9 +1,27 @@
 # ArtCraft Launcher assets
 
-Pictures that [ArtCraft Launcher](https://github.com/storytold/craft-launcher) downloads at run
-time instead of bundling: today, the screenshots on each Craft App's details page.
+Canonical metadata and assets for [ArtCraft Launcher](https://github.com/storytold/craft-launcher):
+the base app catalog, content-addressed app icons and screenshots. ArtCraft Services consumes
+this repository at website build time, enriches the catalog with release metadata, and signs
+the published TOML. The signing key remains in the website's build environment, not here.
 
-The launcher reads `https://raw.githubusercontent.com/storytold/craft-launcher-assets/<tag>/<app>/<key>.jpg`
+## Updating the catalog and icons
+
+- Edit `catalog.toml` for catalog entries, metadata and descriptions; leave the release tables
+  and generated timestamps to the website build.
+- Store PNGs in `app-icons/<app-id>-<sha256>.png`, with the full lowercase SHA-256 digest of
+  the file bytes. The catalog's `icon_url` must point to the matching file served at
+  `https://getartcraft.com/launcher-app-icons/` and `icon_sha256` must contain that digest.
+- Add attribution and any required licenses in `app-icons/`. Leave previously published
+  content-addressed icons available for cached catalogs.
+
+A push to `main` or a new `v*` screenshot tag notifies ArtCraft Services to rebuild.
+The workflow requires the organization-provided `ARTCRAFT_SERVICES_DISPATCH_TOKEN`
+with repository dispatch access to ArtCraft Services. Each build uses a particular catalog
+commit and immutable screenshot tag revisions.
+
+Screenshots are served from `https://getartcraft.com/launcher-screenshots/<tag>/<app>/<key>.jpg`.
+The launcher also reads the fallback `https://raw.githubusercontent.com/storytold/craft-launcher-assets/<tag>/<app>/<key>.jpg`
 at a pinned tag (`SCREENSHOTS_REV` in `crates/core/src/details.rs`), and keeps what it downloads
 under that tag, so a published tag must never change.
 
